@@ -638,9 +638,28 @@ function confirmBooking(){
     bookedOn:new Date().toLocaleDateString('en-IN'),
     status:'Confirmed'
   };
-  let all=getBookings();
-  all.unshift(booking);
-  saveBookings(all);
+  fetch("http://localhost:3000/book", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    name: booking.name,
+    car_id: booking.carId,
+    start_date: booking.start,
+    end_date: booking.end,
+    total_price: booking.total
+  })
+})
+.then(res => res.text())
+.then(data => {
+  console.log(data);
+  toast('Booking saved to database!', 'ok');
+})
+.catch(err => {
+  console.log(err);
+  toast('Error saving booking', 'err');
+});
   toast('Booking confirmed! Ref: '+booking.id,'ok');
   updateNavBadge();
   updateDashboard();
